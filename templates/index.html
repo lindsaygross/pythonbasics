@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>Sierra APX Interview Prep</h1>
+    <p class="hero-sub">20-day study plan &mdash; from Python basics to interview mastery</p>
+    <div class="hero-stats">
+        <div class="stat">
+            <span class="stat-number" id="stat-completed">0</span>
+            <span class="stat-label">Completed</span>
+        </div>
+        <div class="stat">
+            <span class="stat-number" id="stat-remaining">20</span>
+            <span class="stat-label">Remaining</span>
+        </div>
+        <div class="stat">
+            <span class="stat-number" id="stat-exercises">0</span>
+            <span class="stat-label">Exercises Done</span>
+        </div>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-bar-fill" id="hero-progress-fill"></div>
+    </div>
+</div>
+
+{% for phase in phases %}
+<section class="phase-section">
+    <div class="phase-header">
+        <h2>Phase {{ phase.number }}: {{ phase.title }} <span class="phase-days">(Days {{ phase.days }})</span></h2>
+        <p class="phase-goal">{{ phase.goal }}</p>
+    </div>
+    <div class="day-grid">
+        {% for day in days %}
+        {% if day.phase == phase.number %}
+        <a href="/day/{{ day.day }}" class="day-card" data-day="{{ day.day }}">
+            <div class="day-card-header">
+                <span class="day-number">Day {{ day.day }}</span>
+                <span class="day-check" id="check-{{ day.day }}"></span>
+            </div>
+            <h3 class="day-title">{{ day.title }}</h3>
+            <div class="day-meta">
+                <span>{{ day.concepts|length }} concepts</span>
+                <span>&middot;</span>
+                <span>{{ day.exercises|length }} exercises</span>
+            </div>
+        </a>
+        {% endif %}
+        {% endfor %}
+    </div>
+</section>
+{% endfor %}
+
+<section class="quick-ref">
+    <h2>Quick Reference: Interview Cheat Sheet</h2>
+    <div class="ref-grid">
+        <div class="ref-card">
+            <h3>Part 1: Retry Logic</h3>
+            <p>5 retries, 2s sleep, try/except with absorb/throw</p>
+            <code>87% success = 1 - (2/3)^5</code>
+        </div>
+        <div class="ref-card">
+            <h3>Part 2a: Lookup Map</h3>
+            <p>Dict from product ID to product for O(1) lookup</p>
+            <code>product_map[p["id"]] = p</code>
+        </div>
+        <div class="ref-card">
+            <h3>Part 2b: DFS Chain</h3>
+            <p>While loop + visited set for cycle detection</p>
+            <code>while id not in visited</code>
+        </div>
+        <div class="ref-card">
+            <h3>Part 3: Components</h3>
+            <p>Bidirectional related_items (stretch goal)</p>
+            <code>Don't over-index on this</code>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>updateDashboard();</script>
+{% endblock %}

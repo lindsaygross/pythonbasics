@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Day {{ day.day }}: {{ day.title }} - Sierra APX Prep{% endblock %}
+
+{% block content %}
+<div class="day-header">
+    <div class="day-header-top">
+        <span class="phase-badge">Phase {{ day.phase }}</span>
+        <div class="day-nav-links">
+            {% if prev_day %}<a href="/day/{{ prev_day }}">&larr; Day {{ prev_day }}</a>{% endif %}
+            <a href="/">All Days</a>
+            {% if next_day %}<a href="/day/{{ next_day }}">Day {{ next_day }} &rarr;</a>{% endif %}
+        </div>
+    </div>
+    <h1>Day {{ day.day }}: {{ day.title }}</h1>
+    <div class="objectives">
+        <h3>Today's Objectives</h3>
+        <ul>
+            {% for obj in day.objectives %}
+            <li>{{ obj }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- Concepts -->
+<section class="section">
+    <h2>Concepts</h2>
+    {% for concept in day.concepts %}
+    <div class="concept-card">
+        <h3>{{ concept.title }}</h3>
+        <p>{{ concept.explanation }}</p>
+        {% if concept.code %}
+        <pre><code class="language-python">{{ concept.code }}</code></pre>
+        {% endif %}
+    </div>
+    {% endfor %}
+</section>
+
+<!-- Exercises -->
+{% if day.exercises %}
+<section class="section">
+    <h2>Exercises</h2>
+    {% for exercise in day.exercises %}
+    <div class="exercise-card" data-day="{{ day.day }}" data-exercise="{{ loop.index0 }}">
+        <div class="exercise-header">
+            <h3>
+                <span class="exercise-status" id="ex-status-{{ day.day }}-{{ loop.index0 }}"></span>
+                Exercise {{ loop.index }}: {{ exercise.title }}
+            </h3>
+            <button class="btn-done" onclick="toggleExercise({{ day.day }}, {{ loop.index0 }})">
+                Mark Done
+            </button>
+        </div>
+        <p>{{ exercise.description|replace('\n', '<br>')|safe }}</p>
+
+        <button class="btn-toggle" onclick="toggleHint(this)">Show Hint</button>
+        <div class="collapsible hint-content">
+            <p><strong>Hint:</strong> {{ exercise.hint }}</p>
+        </div>
+
+        <button class="btn-toggle" onclick="toggleSolution(this)">Show Solution</button>
+        <div class="collapsible solution-content">
+            <pre><code class="language-python">{{ exercise.solution }}</code></pre>
+        </div>
+    </div>
+    {% endfor %}
+</section>
+{% endif %}
+
+<!-- Videos -->
+{% if day.videos %}
+<section class="section">
+    <h2>Video Resources</h2>
+    <div class="video-list">
+        {% for video in day.videos %}
+        <a href="{{ video.url }}" target="_blank" rel="noopener" class="video-link">
+            <span class="video-icon">&#9654;</span>
+            {{ video.title }}
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Interview Tip -->
+{% if day.interview_tip %}
+<section class="section">
+    <div class="tip-card">
+        <h3>Interview Tip</h3>
+        <p>{{ day.interview_tip }}</p>
+    </div>
+</section>
+{% endif %}
+
+<!-- Day Completion -->
+<div class="day-complete-section">
+    <button class="btn-complete" id="btn-complete-day" onclick="toggleDayComplete({{ day.day }})">
+        Mark Day {{ day.day }} Complete
+    </button>
+    <div class="day-nav-bottom">
+        {% if prev_day %}<a href="/day/{{ prev_day }}" class="btn-nav">&larr; Day {{ prev_day }}</a>{% endif %}
+        {% if next_day %}<a href="/day/{{ next_day }}" class="btn-nav">Day {{ next_day }} &rarr;</a>{% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    initDayPage({{ day.day }}, {{ day.exercises|length }});
+    hljs.highlightAll();
+</script>
+{% endblock %}
